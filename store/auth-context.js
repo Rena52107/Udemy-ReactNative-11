@@ -1,4 +1,4 @@
-import { createContext, useState } from 'react';
+import { createContext, useContext, useState } from 'react';
 
 export const AuthContext = createContext({
   token: '',
@@ -9,6 +9,8 @@ export const AuthContext = createContext({
 
 function AuthContextProvider({ children }) {
   const [authToken, setAuthToken] = useState();
+
+  const  useContext= useState(AuthContext);
 
   function authenticate(token) {
     setAuthToken(token);
