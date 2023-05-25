@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { Alert } from 'react-native';
 
 import AuthContent from '../components/Auth/AuthContent';
@@ -19,9 +19,8 @@ function LoginScreen() {
         'Authentication failed!',
         'Could not log you in. Please check your credentials or try again later!'
       );
+      setIsAuthenticating(false);
     }
-
-    setIsAuthenticating(false);
   }
 
   if (isAuthenticating) {
