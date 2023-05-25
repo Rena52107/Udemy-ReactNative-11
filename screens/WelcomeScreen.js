@@ -5,14 +5,14 @@ import { FIREBASE_URL } from '@env';
 import { AuthContext } from '../store/auth-context';
 
 function WelcomeScreen() {
-  const [fetchedMessage, setFetchedMessage] = useState('');
+  const [fetchedMessage, setFetchedMesssage] = useState('');
 
   const authCtx = useContext(AuthContext);
   const token = authCtx.token;
 
   useEffect(() => {
     axios.get(FIREBASE_URL + '/message.json?' + token).then((response) => {
-      setFetchedMessage(response.data);
+      setFetchedMesssage(response.data);
     });
   }, [token]);
 

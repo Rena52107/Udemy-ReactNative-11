@@ -1,13 +1,15 @@
-import { useState, useContext } from 'react';
+import { useContext, useState } from 'react';
 import { Alert } from 'react-native';
 
 import AuthContent from '../components/Auth/AuthContent';
 import LoadingOverlay from '../components/ui/LoadingOverlay';
+import { AuthContext } from '../store/auth-context';
+import { login } from '../util/auth';
 
 function LoginScreen() {
   const [isAuthenticating, setIsAuthenticating] = useState(false);
 
-  const authCtx = useContext(AuthContent);
+  const authCtx = useContext(AuthContext);
 
   async function loginHandler({ email, password }) {
     setIsAuthenticating(true);
@@ -24,14 +26,10 @@ function LoginScreen() {
   }
 
   if (isAuthenticating) {
-    return <LoadingOverlay message='Loggin you in...' />;
+    return <LoadingOverlay message="Logging you in..." />;
   }
-  return (
-    <AuthContent
-      isLogin
-      onAuthenticate={loginHandler}
-    />
-  );
+
+  return <AuthContent isLogin onAuthenticate={loginHandler} />;
 }
 
 export default LoginScreen;
