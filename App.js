@@ -3,7 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StatusBar } from 'expo-status-bar';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import AppLoading from 'expo-app-loading';
+import * as SplashScreen from 'expo-splash-screen';
 
 import LoginScreen from './screens/LoginScreen';
 import SignupScreen from './screens/SignupScreen';
@@ -13,6 +13,11 @@ import AuthContextProvider, { AuthContext } from './store/auth-context';
 import IconButton from './components/ui/IconButton';
 
 const Stack = createNativeStackNavigator();
+
+async function prepareResources() {
+  // Any async tasks you need to complete before App can render
+  await AsyncStorage.getItem('token');
+}
 
 function AuthStack() {
   return (
@@ -68,7 +73,9 @@ function Navigation() {
   const authCtx = useContext(AuthContext);
 
   return (
-    <NavigationContainer>
+    <NavigationContainer
+      onReady={() => SplashScreen.hideAsync()} // Hide the splash screen when the app is ready
+    >
       {!authCtx.isAuthenticated && <AuthStack />}
       {authCtx.isAuthenticated && <AuthenticatedStack />}
     </NavigationContainer>
@@ -86,19 +93,26 @@ function Root() {
       if (storedToken) {
         authCtx.authenticate(storedToken);
       }
+
+      setIsTryingLogin(false); // Mark login as completed
     }
 
     fetchToken();
   }, []);
 
   if (isTryingLogin) {
-    return <AppLoading />;
+    return null; // Return null instead of <AppLoading /> to avoid rendering the old splash screen
   }
 
   return <Navigation />;
 }
 
 export default function App() {
+  useEffect(() => {
+    SplashScreen.preventAutoHideAsync(); // Prevent the splash screen from hiding automatically
+    prepareResources().then(() => SplashScreen.hideAsync()); // Hide the splash screen when the resources are ready
+  }, []);
+
   return (
     <>
       <StatusBar style='light' />
